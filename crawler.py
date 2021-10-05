@@ -42,4 +42,4 @@ for item in response['itemList']:
     df = df.append(new_row, ignore_index=True)
 
 
-df.to_csv("collected_data/authors.csv")
+df.to_csv("collected_data/authors.csv", index_col=False)
