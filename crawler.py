@@ -24,10 +24,8 @@ response = r.json()
 print(r.status_code)
 
 for item in response['itemList']:
-    print("adding a new item")
     author = item['author']
     author_stats = item['authorStats']
-
     new_row = {
         'uid': author['id'],
         'nickname': author['nickname'],
@@ -35,11 +33,20 @@ for item in response['itemList']:
         'verified': author['verified'],
         'follower_count': author_stats['followerCount'],
         'like_count': author_stats['heartCount'],
-        'video_count': author_stats['videoCount']
+        'video_count': author_stats['videoCount'],
+        'hashtags': []
     }
-    print(new_row)
 
-    df = df.append(new_row, ignore_index=True)
+    if 'textExtra' in item:
+        for extra_items in item['textExtra']:
+            new_row['hashtags'].append(extra_items['hashtagName'])
+            print("adding a hashtag successfully", extra_items['hashtagName'])
+        # Want to check if the author is already in the df
+    if str(new_row['uid']) not in df.values:
+        df = df.append(new_row, ignore_index=True)
+        print("adding a new item")
+    else:
+        print("value found in dataframe")
 
 
 df.to_csv("collected_data/authors.csv", index=False)
